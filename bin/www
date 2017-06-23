@@ -1,0 +1,69 @@
+#!/usr/bin/env node
+
+const app = require('../app').default;
+const debug = require('debug')('farmasun:server');
+const config = require('config');
+
+const normalizePort = (val) => {
+  const port = parseInt(val, 10);
+  if (isNaN(port)) {
+    return val;
+  }
+
+  if (port >= 0) {
+    return port;
+  }
+
+  return false;
+};
+
+new app(config)
+  .then((main) => {
+    const server = main.server;
+    const port = normalizePort(process.env.PORT || config.get('server.port'));
+
+    const onError = (error, port) => {
+      if (error.syscall !== 'listen') {
+        throw error;
+      }
+
+      const bind = typeof port === 'string' ? `Pipe ${port}` : `Port ${port}`;
+
+      switch (error.code) {
+      case 'EACCES':
+        console.error(`${bind} requires elevated privileges`);
+        process.exit(1);
+        break;
+      case 'EADDRINUSE':
+        console.error(`${bind} is already in use`);
+        process.exit(1);
+        break;
+      default:
+        throw error;
+      }
+    };
+
+    const onListening = () => {
+      const addr = server.address();
+      const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port}`;
+      debug(`Listening on ${bind}`);
+      return true;
+    };
+
+    const gracefulExit = () => {
+      console.log('exiting');
+      return process.exit(0);
+    };
+
+    server.on('error', () => onError(port));
+    server.on('listening', () => onListening(server));
+
+    process.on('SIGINT', gracefulExit)
+						.on('SIGTERM', gracefulExit);
+    process.on('uncaughtException', err => console.error(`Caught exception: ${err}`));
+
+    console.log(`listen on ${port}`);
+    server.listen(port);
+  }).catch((err) => {
+    throw err;
+  });

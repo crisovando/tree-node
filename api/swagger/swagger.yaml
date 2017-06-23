@@ -1,0 +1,84 @@
+swagger: '2.0'
+info:
+  title: Api Rest Automoviles
+  description: 'Api que almacena y controla los datos de los automoviles y sus versiones'
+  version: 1.0.0
+host: 'localhost:5000'
+basePath: /v1/
+consumes:
+  - application/json
+  - application/x-www-form-urlencoded
+produces:
+  - application/json
+  - application/x-www-form-urlencoded
+
+paths:
+  /especie:
+    get:
+      tags:
+        - Especie
+      summary: obtiene todos los automoviles
+      x-swagger-router-controller: especie.find
+      parameters:
+        - name: nombre
+          in: query
+          description: Nombre del tipo de modelo
+          required: false
+          type: string
+        - name: opcionales
+          in: query
+          required: false
+          description: Equipación adicional
+          type: array
+          items: {
+            type: string
+          }
+        - name: fields
+          in: query
+          required: false
+          description: Campos a devolver
+          type: array
+          items: {
+            type: string
+          }
+      responses:
+        '200':
+          description: Devuelve lista de automoviles
+    put:
+      tags:
+        - Especie
+      summary: Inserta una nueva especie
+      x-swagger-router-controller: especie.insert
+      parameters:
+        - name: dominioTaxonomico
+          in: query
+          required: true
+          type: string
+        - name: especie
+          in: body
+          schema:
+            type: object
+            required: 
+              - reproduccion
+              - metabolismo
+            properties:
+              reproduccion:
+                type: string
+              metabolismo:
+                type: string
+      responses:
+        '201':
+          description: Devuelve el objeto insertado
+    delete:
+      tags:
+        - Automovil
+      summary: Elimina un modelo de automovil
+      x-swagger-router-controller: especie.remove
+      parameters:
+        - name: dominioTaxonomico
+          in: formData
+          required: true
+          type: string
+      responses:
+        '204':
+          description: retorna si el elemento se elimino correctamente

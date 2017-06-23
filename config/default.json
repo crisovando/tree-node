@@ -1,0 +1,29 @@
+{
+  "db": {
+    "host": "mongodb://127.0.0.1:27017/taxonomia",
+    "collections": ["taxonomia"]
+  },
+  "domain": "localhost",
+  "server": {
+    "dbConnectionRetry": true,
+    "maxConnectionRetryTime": 60,
+    "port": 5000
+  },
+  "app": {
+    "url": "http://127.0.0.1:5000/"
+  },
+  "service": {
+    "protocol": "http://",
+    "host": "localhost:5000",
+    "pathname": "/v1"
+  },
+  "redis": {
+    "hosts": [
+      {
+        "host": "127.0.0.1",
+        "port": 6379
+      }
+    ],
+    "mastername": "master"
+  }
+}
