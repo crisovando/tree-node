@@ -6,8 +6,10 @@ const insertarHermano = (nombre, especie, pNodo, dominioTaxonomico) => {
   const nodo = pNodo;
   const hermano = nodo.hermanoDer;
   const path = dominioTaxonomico.substring(0, dominioTaxonomico.indexOf(nombre));
+
   if (hermano == null) {
     nodo.hermanoDer = new Nodo(nombre, path, especie);
+    insertarHijo(nombre, especie, nodo.hermanoDer, dominioTaxonomico);
   } else if (hermano.categoria !== nombre) {
     insertarHermano(nombre, especie, hermano, dominioTaxonomico);
   }
@@ -75,33 +77,45 @@ class Arbol {
   Agregar(dominio, especie) {
     debug('agregar dato');
     const reino = dominio.substring(0, dominio.indexOf('.'));
-    if (!this.raiz) {
-      this.raiz = new Nodo(reino, null);
 
-      // Se achica el dominio para el siguiente nivel taxonomico
-      const newDominio = dominio.substring(dominio.indexOf('.') + 1);
-      insertarHijo(newDominio, especie, this.raiz, dominio);
+    // Se achica el dominio para el siguiente nivel taxonomico
+    const newDominio = dominio.substring(dominio.indexOf('.') + 1);
 
-      return this.raiz;
-    }
-    return this.raiz;
+    return new Promise((resolve, reject) => {
+      this.db.taxonomia.findOne({ categoria: reino }, (err, doc) => {
+        if (err) reject(err);
+
+        if (doc == null) {
+          this.raiz = new Nodo(reino, null);
+
+          
+          insertarHijo(newDominio, especie, this.raiz, dominio);
+
+          resolve(this.raiz);
+        }
+        else {
+          this.raiz = doc;
+          insertarHijo(newDominio, especie, this.raiz, dominio);
+
+          resolve(this.raiz);
+        }
+      })
+    });
   }
 
   Guardar() {
-    const orden = postOrden(this.raiz);
-
     return new Promise((resolve, reject) => {
-      while (true) {
-        const iterator = orden.next();
-        if (iterator.done) break;
-        const nod = iterator.value;
-        debug(`orden.value: ${JSON.stringify(nod)}`);
-        this.db.taxonomia.insert(nod, (err) => {
+      
+        this.db.taxonomia.update({ categoria: this.raiz.categoria }, this.raiz, { upsert: true }, (err, doc) => {
           if (err) reject(err);
+
+          resolve(doc);
         });
-      }
-      resolve();
     });
+  }
+
+  Buscar(nodo, dominio) {
+    
   }
 }
 

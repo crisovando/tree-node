@@ -1,5 +1,5 @@
 {
-  "name": "apirestcablevision",
+  "name": "api taxonomia",
   "version": "1.0.0",
   "description": "api controladora de los modelos de automovil",
   "main": "app.js",
@@ -10,16 +10,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/crisovando/apirestcablevision.git"
+    "url": "git+https://github.com/crisovando/tree-node.git"
   },
   "author": "Cristian Ovando",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/crisovando/apirestcablevision/issues"
+    "url": "https://github.com/crisovando//tree-node/issues"
   },
-  "homepage": "https://github.com/crisovando/apirestcablevision#readme",
+  "homepage": "https://github.com/crisovando//tree-node#readme",
   "dependencies": {
     "babel-eslint": "^7.2.3",
+    "babel-polyfill": "^6.23.0",
     "babel-preset-env": "^1.5.2",
     "babel-register": "^6.24.1",
     "compression": "^1.6.2",
