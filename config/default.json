@@ -16,14 +16,5 @@
     "protocol": "http://",
     "host": "localhost:5000",
     "pathname": "/v1"
-  },
-  "redis": {
-    "hosts": [
-      {
-        "host": "127.0.0.1",
-        "port": 6379
-      }
-    ],
-    "mastername": "master"
   }
 }

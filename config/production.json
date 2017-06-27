@@ -1,25 +1,21 @@
 {
   "db": {
-    "host": "mongodb://127.0.0.1:27017/concesionaria",
-    "collections": ["automovil","equipamiento"]
+    "host": "mongodb://127.0.0.1:27017/taxonomia",
+    "collections": ["taxonomia"]
   },
-  "domain":"apiconcesionaria.herokuapp.com",
+  "domain":"etaxonomia.herokuapp.com",
   "server": {
     "dbConnectionRetry": true,
     "maxConnectionRetryTime": 60,
     "port": 5000
   },
   "app": {
-    "url": "https://apiconcesionaria.herokuapp.com/"
+    "url": "https://etaxonomia.herokuapp.com/"
   },
   "service": {
     "protocol": "https://",
-    "host": "apiconcesionaria.herokuapp.com",
+    "host": "etaxonomia.herokuapp.com",
     "pathname": "/v1"
-  },
-  "redis": {
-    "host": "127.0.0.1",
-    "port": 6379
   },
   "logs": {
     "screenshotFolder": "/dev/shm"
