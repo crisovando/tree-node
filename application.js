@@ -24,7 +24,7 @@ class app {
     debug('init....');
     this.main = {
       config,
-      db: mongojs(config.get('db.host'), config.get('db.collections')),
+      db: mongojs(process.env.MONGOLAB_URI || config.get('db.host'), config.get('db.collections')),
       restEndpoint: config.get('service.protocol') + config.get('service.host') + config.get('service.pathname'),
     };
 

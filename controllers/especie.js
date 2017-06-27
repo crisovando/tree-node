@@ -1,7 +1,5 @@
 
-
 const debug = require('debug')('taxonomia:controllers:especie');
-
 
 function Especie(main) {
   debug('init...');
@@ -23,16 +21,7 @@ function Especie(main) {
     },
     search: (req, res, next) => {
       debug('.especie.find called');
-
-      const nombre = req.swagger.params.nombre ? req.swagger.params.nombre.value : null;
-      const opcionales = req.swagger.params.opcionales ? req.swagger.params.opcionales.value : null;
-      const fields = req.swagger.params.fields ? req.swagger.params.fields.value : null;
-
-      main.libs.especie.find(nombre, opcionales, fields)
-                .then((automoviles) => {
-                  res.json(automoviles);
-                })
-                .catch(err => next(err));
+      // TODO: Realizar el get
     },
   };
 }

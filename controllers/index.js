@@ -1,7 +1,7 @@
 /* eslint-disable semi */
 
 
-const debug = require('debug')('restful:controllers:index');
+const debug = require('debug')('taxonomia:controllers:index');
 
 /**
  * Create controllers for Application (swagger)

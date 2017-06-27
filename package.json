@@ -1,10 +1,10 @@
 {
-  "name": "api taxonomia",
+  "name": "api_taxonomia",
   "version": "1.0.0",
   "description": "api controladora de los modelos de automovil",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon bin/www",
+    "start": "node index.js",
     "debug": "DEBUG=* node bin/www",
     "test": "mocha"
   },
