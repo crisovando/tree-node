@@ -2,7 +2,7 @@
   "name": "api_taxonomia",
   "version": "1.0.0",
   "description": "api controladora de los modelos de automovil",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "debug": "DEBUG=* node bin/www",

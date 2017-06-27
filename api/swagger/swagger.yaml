@@ -3,7 +3,6 @@ info:
   title: Api Rest Automoviles
   description: 'Api que almacena las especies segun su dominio taxonomico'
   version: 1.0.0
-  main: 'index.js'
 host: 'localhost:5000'
 basePath: /v1/
 consumes:
