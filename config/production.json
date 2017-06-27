@@ -17,6 +17,10 @@
     "host": "etaxonomia.herokuapp.com",
     "pathname": "/v1"
   },
+  "redis": {
+    "host": "127.0.0.1",
+    "port": 6379
+  },
   "logs": {
     "screenshotFolder": "/dev/shm"
   }
