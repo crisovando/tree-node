@@ -9,10 +9,9 @@
  * @param {*} hermanoDer
  * @param {*} hijoIzq
  */
-function Nodo(categoria, path, dato, hermanoDer, hijoIzq) {
+function Nodo(categoria, dato, hermanoDer, hijoIzq) {
   this.categoria = categoria;
   this.dato = dato;
-  this.path = path;
 
   /**
    * Hermano derecho del nodo

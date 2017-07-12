@@ -70,10 +70,11 @@ class Arbol {
     this.db = db;
   }
 
-    /**
-     * Inserta un nuevo nodo con el dato enviado por parametro
-     * @param {*int*} dato
-     */
+  /**
+   * Agregar un nuevo
+   * @param {Array} dominio
+   * @param {*} especie
+   */
   Agregar(dominio, especie) {
     debug('agregar dato');
     const reino = dominio.substring(0, dominio.indexOf('.'));
@@ -88,18 +89,16 @@ class Arbol {
         if (doc == null) {
           this.raiz = new Nodo(reino, null);
 
-          
           insertarHijo(newDominio, especie, this.raiz, dominio);
 
           resolve(this.raiz);
-        }
-        else {
+        } else {
           this.raiz = doc;
           insertarHijo(newDominio, especie, this.raiz, dominio);
 
           resolve(this.raiz);
         }
-      })
+      });
     });
   }
 
