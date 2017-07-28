@@ -73,7 +73,7 @@ function makeControllers(main) {
 
 
   return wrapControllers({
-    'especie.search_get': controllers.especie.search,
+    'especie.find_get': controllers.especie.find,
     'especie.insert_put': controllers.especie.insert,
   }, main.announce);
 }

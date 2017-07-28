@@ -1,19 +1,21 @@
-import Nodo from './nodo';
+const Nodo = require('./treeNode');
 
 const debug = require('debug')('taxonomia:lib:arbol');
 
-const insertarHermano = (nombre, especie, pNodo, dominioTaxonomico) => {
-  const nodo = pNodo;
-  const hermano = nodo.hermanoDer;
-  const path = dominioTaxonomico.substring(0, dominioTaxonomico.indexOf(nombre));
+function insertarHermano(categorias, dato, nodo, dominio) {
+  let hermano = nodo.HermanoDer();
+  const categoria = categorias.pop();
 
-  if (hermano == null) {
-    nodo.hermanoDer = new Nodo(nombre, path, especie);
-    insertarHijo(nombre, especie, nodo.hermanoDer, dominioTaxonomico);
-  } else if (hermano.categoria !== nombre) {
-    insertarHermano(nombre, especie, hermano, dominioTaxonomico);
+  if (hermano && hermano.categoria !== categoria) {
+    hermano.__proto__ = Nodo.prototype;
+    hermano.HermanoDer(insertarHermano((categorias.push(categoria), categorias), dato, hermano, dominio));
+  } else {
+    hermano = categorias.length === 0 ? new Nodo(categoria, dato, nodo.Profundidad(), dominio)
+                                      : new Nodo(categoria, undefined, nodo.Profundidad(), dominio);
+    hermano.HijoIzq(insertarHijo(categorias, dato, hermano));
   }
-};
+  return hermano;
+}
 
 /**
  * Inserta hijo si no existe
@@ -21,52 +23,30 @@ const insertarHermano = (nombre, especie, pNodo, dominioTaxonomico) => {
  * @param {object} especie
  * @param {object} nodoPadre
  */
-const insertarHijo = (pDominio, especie, nodoPadre, dominioTaxonomico) => {
-  debug(`insertar hijo ${JSON.stringify(nodoPadre)}`);
-
-  const categoria = pDominio.substring(0, pDominio.indexOf('.'));
-  const path = dominioTaxonomico.substring(0, dominioTaxonomico.indexOf(categoria !== '' ? categoria : pDominio));
-  const hijoIzq = nodoPadre.hijoIzq;
-
-    // Si categoria esta vacio es que es la hoja
-  if (categoria === '') {
-    if (hijoIzq != null) {
-      if (hijoIzq.categoria !== pDominio) {
-        insertarHermano(pDominio, especie, hijoIzq, dominioTaxonomico);
-      }
+function insertarHijo(categorias, dato, nodo, dominio) {
+  const categoria = categorias.pop();
+  let hijoIzq = nodo.HijoIzq();
+  if (hijoIzq) {
+    hijoIzq.__proto__ = Nodo.prototype;
+    if (hijoIzq.categoria !== categoria) {
+      hijoIzq.HermanoDer(insertarHermano((categorias.push(categoria), categorias), dato, hijoIzq, dominio));
     } else {
-      nodoPadre.hijoIzq = new Nodo(pDominio, path, especie);
+      hijoIzq.HijoIzq(insertarHijo(categorias, dato, hijoIzq, dominio));
     }
-  } else {
-    const dominio = pDominio.substring(pDominio.indexOf('.') + 1);
-    if (hijoIzq) {
-      if (hijoIzq.categoria === categoria) {
-        insertarHijo(dominio, especie, hijoIzq, dominioTaxonomico);
-      } else {
-        insertarHermano(dominio, especie, hijoIzq, dominioTaxonomico);
-      }
-    } else {
-      nodoPadre.hijoIzq = new Nodo(categoria, path);
-      insertarHijo(dominio, especie, nodoPadre.hijoIzq, dominioTaxonomico);
-    }
+  } else if (categoria) {
+    hijoIzq = categorias.length === 0 ? new Nodo(categoria, dato, nodo.Profundidad() + 1, dominio)
+                                      : new Nodo(categoria, undefined, nodo.Profundidad() + 1, dominio);
+    hijoIzq.HijoIzq(insertarHijo(categorias, dato, hijoIzq));
   }
-};
-
-function* postOrden(nodo) {
-  if (nodo) {
-    yield* postOrden(nodo.hijoIzq);
-    yield* postOrden(nodo.hermanoDer);
-    debug('yield nodo');
-    yield nodo;
-  }
+  return hijoIzq;
 }
+
 
 /**
  *
  */
 class Arbol {
   constructor(db) {
-    this.raiz = null;
     this.db = db;
   }
 
@@ -75,41 +55,22 @@ class Arbol {
    * @param {Array} dominio
    * @param {*} especie
    */
-  Agregar(dominio, especie) {
+  Agregar(dominio, dato) {
     debug('agregar dato');
-    const reino = dominio.substring(0, dominio.indexOf('.'));
-
-    // Se achica el dominio para el siguiente nivel taxonomico
-    const newDominio = dominio.substring(dominio.indexOf('.') + 1);
-
+    
     return new Promise((resolve, reject) => {
+      const stackCategorias = dominio.split('.').reverse();
+      const reino = stackCategorias.pop();
       this.db.taxonomia.findOne({ categoria: reino }, (err, doc) => {
         if (err) reject(err);
-
-        if (doc == null) {
-          this.raiz = new Nodo(reino, null);
-
-          insertarHijo(newDominio, especie, this.raiz, dominio);
-
-          resolve(this.raiz);
-        } else {
-          this.raiz = doc;
-          insertarHijo(newDominio, especie, this.raiz, dominio);
-
-          resolve(this.raiz);
+        const raiz = doc === null ? new Nodo(reino, null, 0) : Object.assign({ __proto__: Nodo.prototype }, doc);
+        try {
+          raiz.HijoIzq(insertarHijo(stackCategorias, dato, raiz, dominio));
+        } catch (error) {
+          reject(error);
         }
+        resolve(raiz);
       });
-    });
-  }
-
-  Guardar() {
-    return new Promise((resolve, reject) => {
-      
-        this.db.taxonomia.update({ categoria: this.raiz.categoria }, this.raiz, { upsert: true }, (err, doc) => {
-          if (err) reject(err);
-
-          resolve(doc);
-        });
     });
   }
 

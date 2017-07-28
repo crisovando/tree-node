@@ -24,7 +24,7 @@ paths:
           in: query
           description: Dominio taxonomico completo de la especie. Ej.
                        reino.filo.clase.orden.familia.genero.especie
-          required: false
+          required: true
           type: string
       responses:
         '200':

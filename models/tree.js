@@ -6,6 +6,7 @@ function Tree(db) {
 }
 
 Tree.prototype.Root = () => this.root;
+Tree.prototype.DB = () => this.db;
 
   /**
    * Inicializa un arbol de un objeto tree enviado
@@ -19,18 +20,21 @@ Tree.prototype.Init = (tree) => {
    * Agrega un nodo al arbol
    * @param {Array} dominio
    */
-Tree.prototype.Agregar = (dominio, dato) => {
-  const stackCategorias = dominio.split('.').reverse();
-  const reino = stackCategorias.pop();
+Tree.prototype.Agregar = (dominio, dato, db) => {
+  
+  const promise = new Promise((resolve, reject) => {
+    const stackCategorias = dominio.split('.').reverse();
+    const reino = stackCategorias.pop();
 
-  return new Promise((resolve, reject) => {
-    this.db.taxonomia.findOne({ categoria: reino }, (err, doc) => {
+    db.taxonomia.findOne({ categoria: reino }, (err, doc) => {
       if (err) reject(err);
       this.raiz = doc === null ? new Nodo(reino) : doc;
       this.raiz.HijoIzq(insertarHijo(stackCategorias, dato, this.raiz));
       resolve(this.raiz);
     });
   });
+
+  return promise;
 };
 
   /**

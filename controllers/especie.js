@@ -19,9 +19,16 @@ function Especie(main) {
       })
       .catch(err => next(err));
     },
-    search: (req, res, next) => {
+    find: (req, res, next) => {
       debug('.especie.find called');
-      // TODO: Realizar el get
+
+      const dominio = req.swagger.params.dominioTaxonomico.value;
+
+      main.libs.especie.find(dominio)
+        .then((especie) => {
+          res.json(especie);
+        })
+        .catch(err => next(err));
     },
   };
 }
