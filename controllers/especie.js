@@ -30,6 +30,17 @@ function Especie(main) {
         })
         .catch(err => next(err));
     },
+    remove: (req, res, next) => {
+      debug('.especie.remove called');
+
+      const dominio = req.swagger.params.dominioTaxonomico.value;
+
+      main.libs.especie.remove(dominio)
+        .then((result) => {
+          res.json(result);
+        })
+        .catch(err => next(err));
+    },
   };
 }
 

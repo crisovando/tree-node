@@ -13,7 +13,7 @@ const debug = require('debug')('taxonomia:controllers:index');
  * @param {function} handler - The function for controller.
  * @returns {Function} - the wrap function.
  */
-function wrapHandler(handler) {
+function  wrapHandler(handler) {
   debug('wrapHandler called');
   return (req, res, next) => {
     try {
@@ -49,7 +49,7 @@ function wrapHandler(handler) {
  */
 function wrapControllers(controllers) {
   debug('wrapControllers called');
-  // controllers.forEach(controller => wrapHandler(controller));
+
   for (const k in controllers) {
     debug(`setting wrapHandler to: ${k}`);
     controllers[k] = wrapHandler(controllers[k]);
@@ -75,6 +75,7 @@ function makeControllers(main) {
   return wrapControllers({
     'especie.find_get': controllers.especie.find,
     'especie.insert_put': controllers.especie.insert,
+    'especie.remove_delete': controllers.especie.remove,
   }, main.announce);
 }
 
