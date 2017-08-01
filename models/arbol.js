@@ -5,7 +5,7 @@ const debug = require('debug')('taxonomia:lib:arbol');
 function insertarHermano(categorias, dato, nodo) {
   let hermano = nodo.HermanoDer();
   const cats = Object.assign([], categorias);
-  const categoria = cats.pop();
+  const categoria = cats.shift();
 
   if (hermano && hermano.categoria !== categoria) {
     hermano.__proto__ = Nodo.prototype;
@@ -27,7 +27,7 @@ function insertarHermano(categorias, dato, nodo) {
  */
 function insertarHijo(categorias, dato, nodo) {
   const cats = Object.assign([], categorias);
-  const categoria = cats.pop();
+  const categoria = cats.shift();
   let hijoIzq = nodo.HijoIzq();
   if (hijoIzq) {
     hijoIzq.__proto__ = Nodo.prototype;
@@ -48,7 +48,7 @@ function insertarHijo(categorias, dato, nodo) {
 
 const buscarEspecie = (categorias, nodo) => {
   const cats = Object.assign([], categorias);
-  const cat = cats.pop();
+  const cat = cats.shift();
   if (nodo && cat) {
     if (nodo.categoria === cat) {
       return cats.length > 0 ? buscarEspecie(cats, nodo.hijoIzq) : nodo;
@@ -56,6 +56,16 @@ const buscarEspecie = (categorias, nodo) => {
     return buscarEspecie(categorias, nodo.hermanoDer);
   }
   return null;
+};
+
+const obtenerEspecies = (nodo) => {
+  const especies = [];
+  if (nodo) {
+    if (nodo.dato) { especies.push(nodo); }
+    especies.push(...obtenerEspecies(nodo.hijoIzq));
+    especies.push(...obtenerEspecies(nodo.hermanoDer));
+  }
+  return especies.filter(x => x !== null);
 };
 
 /**
@@ -76,9 +86,9 @@ class Arbol {
     debug('agregar dato');
 
     return new Promise((resolve, reject) => {
-      const stackCategorias = dominio.split('.').reverse();
+      const stackCategorias = dominio.split('.');
       const stackCats = Object.assign([], stackCategorias);
-      const reino = stackCategorias.pop();
+      const reino = stackCategorias.shift();
       this.db.taxonomia.findOne({}, (err, doc) => {
         if (err) reject(err);
         const raiz = doc === null ? new Nodo(reino, null, 0) : Object.assign({ __proto__: Nodo.prototype }, doc);
@@ -100,7 +110,10 @@ class Arbol {
     const especie = buscarEspecie(categorias, this.root);
     return especie || {};
   }
-
+  ObtenerEspecies(nodo) {
+    const especies = obtenerEspecies(nodo);
+    return especies;
+  }
 }
 
 module.exports = Arbol;
