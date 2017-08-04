@@ -50,7 +50,7 @@ const buscarEspecie = (categorias, nodo) => {
   const cats = Object.assign([], categorias);
   const cat = cats.shift();
   if (nodo && cat) {
-    if (nodo.categoria === cat) {
+    if (nodo.categoria.trim() === cat.trim()) {
       return cats.length > 0 ? buscarEspecie(cats, nodo.hijoIzq) : nodo;
     }
     return buscarEspecie(categorias, nodo.hermanoDer);
@@ -63,6 +63,17 @@ const obtenerEspecies = (nodo, especies) => {
     if (nodo.data) { especies.push(nodo); }
     obtenerEspecies(nodo.hijoIzq, especies);
     obtenerEspecies(nodo.hermanoDer, especies);
+  }
+};
+
+const obtenerCategorias = (nodo, nivel, categorias) => {
+  if (nodo) {
+    if (nodo.profundidad === nivel) {
+      categorias.push(nodo.categoria);
+      obtenerCategorias(nodo.hermanoDer, nivel, categorias);
+    } else {
+      obtenerCategorias(nodo.hijoIzq, nivel, categorias);
+    }
   }
 };
 
@@ -112,6 +123,12 @@ class Arbol {
     const especies = [];
     obtenerEspecies(nodo, especies);
     return especies;
+  }
+
+  ObtenerCategoriasXNivel(nivel) {
+    const categorias = [];
+    obtenerCategorias(this.root, nivel, categorias);
+    return categorias;
   }
 }
 

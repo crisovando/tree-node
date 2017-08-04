@@ -22,9 +22,10 @@ function Especie(main) {
     find: (req, res, next) => {
       debug('.especie.find called');
 
-      const dominio = req.swagger.params.dominioTaxonomico.value;
+      const dominio = req.swagger.params.dominioTaxonomico ? req.swagger.params.dominioTaxonomico.value : null;
+      const nivel = req.swagger.params.nivel ? req.swagger.params.nivel.value : null;
 
-      main.libs.especie.find(dominio)
+      main.libs.especie.find(dominio, nivel)
         .then((especie) => {
           res.json(especie);
         })

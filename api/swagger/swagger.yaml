@@ -24,11 +24,16 @@ paths:
           in: query
           description: Dominio taxonomico completo de la especie. Ej.
                        reino.filo.clase.orden.familia.genero.especie
-          required: true
+          required: false
           type: string
+        - name: nivel
+          in: query
+          description: Nivel de las categorias a mostrar
+          required: false
+          type: number
       responses:
         '200':
-          description: Devuelve lista de especies
+          description: Devuelve lista de especies o categorias por nivel
     put:
       tags:
         - Especie
