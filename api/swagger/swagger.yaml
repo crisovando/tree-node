@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  title: Api Rest Automoviles
+  title: Api Rest Taxonomía
   description: 'Api que almacena las especies segun su dominio taxonomico'
   version: 1.0.0
 host: 'localhost:5000'
@@ -28,7 +28,7 @@ paths:
           type: string
       responses:
         '200':
-          description: Devuelve lista de automoviles
+          description: Devuelve lista de especies
     put:
       tags:
         - Especie
