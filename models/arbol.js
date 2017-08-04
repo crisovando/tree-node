@@ -58,14 +58,12 @@ const buscarEspecie = (categorias, nodo) => {
   return null;
 };
 
-const obtenerEspecies = (nodo) => {
-  const especies = [];
+const obtenerEspecies = (nodo, especies) => {
   if (nodo) {
-    if (nodo.dato) { especies.push(nodo); }
-    especies.push(...obtenerEspecies(nodo.hijoIzq));
-    especies.push(...obtenerEspecies(nodo.hermanoDer));
+    if (nodo.data) { especies.push(nodo); }
+    obtenerEspecies(nodo.hijoIzq, especies);
+    obtenerEspecies(nodo.hermanoDer, especies);
   }
-  return especies.filter(x => x !== null);
 };
 
 /**
@@ -111,7 +109,8 @@ class Arbol {
     return especie || {};
   }
   ObtenerEspecies(nodo) {
-    const especies = obtenerEspecies(nodo);
+    const especies = [];
+    obtenerEspecies(nodo, especies);
     return especies;
   }
 }
